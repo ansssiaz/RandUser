@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RandUser</string>
+    <string name="network_error">Network connection error! Please, check your connection</string>
+    <string name="server_error">An error occurred when receiving the data from the server</string>
+    <string name="snackbar_action">Repeat</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="user_image_description">User image</string>
+    <string name="phone_icon_description">Phone icon</string>
+    <string name="address_icon_description">Address icon</string>
 </resources>
