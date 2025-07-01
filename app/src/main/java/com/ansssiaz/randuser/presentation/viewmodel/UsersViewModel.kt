@@ -20,8 +20,12 @@ class UsersViewModel(
         getUsers(USERS_COUNT)
     }
 
-    fun getUsers(number: Int) {
-        _state.update { it.copy(status = Status.Loading) }
+    fun getUsers(number: Int, isRefresh: Boolean = false) {
+        _state.update {
+            it.copy(
+                status = if (isRefresh) Status.Refreshing else Status.Loading
+            )
+        }
         viewModelScope.launch {
             try {
                 val users = repository.getUsers(number)

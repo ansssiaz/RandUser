@@ -21,8 +21,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -30,9 +30,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,10 +43,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ansssiaz.randuser.data.model.User
 import com.ansssiaz.randuser.presentation.viewmodel.UsersViewModel
@@ -52,19 +57,26 @@ import com.ansssiaz.randuser.util.getErrorText
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListOfUsersScreen(
     onUserClick: (User) -> Unit,
     viewModel: UsersViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val pullToRefreshState = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-
     val action = stringResource(R.string.snackbar_action)
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(R.string.app_name)) },
+            )
+        },
+        modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         LaunchedEffect(state.isError) {
@@ -97,23 +109,28 @@ fun ListOfUsersScreen(
                 }
             }
 
-            state.isRefreshing -> {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    UserList(users = state.users ?: emptyList())
-                    LinearProgressIndicator(modifier = Modifier.align(Alignment.TopCenter))
-                }
-            }
-
             else -> {
-                UserList(
-                    users = state.users,
-                    onUserClick = onUserClick,
-                    modifier = Modifier.padding(paddingValues)
-                )
+                PullToRefreshBox(
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = { viewModel.getUsers(USERS_COUNT, isRefresh = true) },
+                    modifier = Modifier.padding(paddingValues),
+                    state = pullToRefreshState,
+                    indicator = {
+                        Indicator(
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            isRefreshing = state.isRefreshing,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            state = pullToRefreshState
+                        )
+                    }
+                ) {
+                    UserList(
+                        users = state.users,
+                        onUserClick = onUserClick,
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }
@@ -157,6 +174,7 @@ fun UserItem(
             AsyncImage(
                 model = user.picture.large,
                 contentDescription = stringResource(R.string.user_image_description),
+                placeholder = ColorPainter(MaterialTheme.colorScheme.background),
                 modifier = Modifier
                     .size(110.dp)
                     .clip(CircleShape)
