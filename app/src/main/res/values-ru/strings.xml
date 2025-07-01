@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RandUser</string>
+    <string name="network_error">Ошибка подключения к сети! Пожалуйста, проверьте соединение</string>
+    <string name="server_error">При получении данных с сервера произошла ошибка</string>
+    <string name="snackbar_action">Повторить</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="user_image_description">Изображение пользователя</string>
+    <string name="phone_icon_description">Иконка телефона</string>
+    <string name="address_icon_description">Иконка адреса</string>
+</resources>
