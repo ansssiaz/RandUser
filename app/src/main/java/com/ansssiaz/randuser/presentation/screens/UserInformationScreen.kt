@@ -125,10 +125,12 @@ fun UserInformationScreen(
                         )
                     }
 
-
                     Row {
                         Text(text = "Coordinates: ", fontWeight = FontWeight.Bold)
-                        Text(text = "${user.coordinates.latitude}, ${user.coordinates.longitude}")
+                        ClickableCoordinatesText(
+                            user.coordinates.latitude,
+                            user.coordinates.longitude
+                        )
                     }
 
                     Row {
@@ -174,6 +176,26 @@ fun ClickableAddressText(
         modifier = Modifier.clickable {
             val uri = Uri.encode(address)
             val intent = Intent(Intent.ACTION_VIEW, "geo:0,0?q=$uri".toUri())
+            context.startActivity(intent)
+        }
+    )
+}
+
+@Composable
+fun ClickableCoordinatesText(
+    latitude: String,
+    longitude: String
+) {
+    val context = LocalContext.current
+    val coordinates = "$latitude, $longitude"
+    Text(
+        text = coordinates,
+        color = MaterialTheme.colorScheme.primary,
+        textDecoration = TextDecoration.Underline,
+        modifier = Modifier.clickable {
+            val query = Uri.encode("$latitude,$longitude")
+            val uri = "geo:0,0?q=$query"
+            val intent = Intent(Intent.ACTION_VIEW, uri.toUri())
             context.startActivity(intent)
         }
     )
