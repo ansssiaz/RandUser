@@ -55,15 +55,14 @@ import com.ansssiaz.randuser.presentation.viewmodel.UsersViewModel
 import com.ansssiaz.randuser.util.USERS_COUNT
 import com.ansssiaz.randuser.util.getErrorText
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListOfUsersScreen(
     onUserClick: (User) -> Unit,
-    viewModel: UsersViewModel = koinViewModel()
+    usersViewModel: UsersViewModel,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by usersViewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val pullToRefreshState = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
@@ -91,7 +90,7 @@ fun ListOfUsersScreen(
                         duration = SnackbarDuration.Indefinite
                     )
                     if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.getUsers(USERS_COUNT)
+                        usersViewModel.getUsers(USERS_COUNT)
                     }
                 }
             }
@@ -112,7 +111,7 @@ fun ListOfUsersScreen(
             else -> {
                 PullToRefreshBox(
                     isRefreshing = state.isRefreshing,
-                    onRefresh = { viewModel.getUsers(USERS_COUNT, isRefresh = true) },
+                    onRefresh = { usersViewModel.getUsers(USERS_COUNT, isRefresh = true) },
                     modifier = Modifier.padding(paddingValues),
                     state = pullToRefreshState,
                     indicator = {
@@ -140,7 +139,7 @@ fun ListOfUsersScreen(
 fun UserList(
     users: List<User>?,
     modifier: Modifier = Modifier,
-    onUserClick: (User) -> Unit = {},
+    onUserClick: (User) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier

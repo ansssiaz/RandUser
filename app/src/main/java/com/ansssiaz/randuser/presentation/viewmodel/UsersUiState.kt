@@ -5,6 +5,7 @@ import com.ansssiaz.randuser.util.Status
 
 data class UsersUiState(
     val users: List<User>? = null,
+    val selectedUser: User? = null,
     val status: Status = Status.Idle
 ) {
     val isEmptyLoading: Boolean = status == Status.Loading && users.isNullOrEmpty()

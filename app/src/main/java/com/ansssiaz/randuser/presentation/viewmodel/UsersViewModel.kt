@@ -2,6 +2,7 @@ package com.ansssiaz.randuser.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ansssiaz.randuser.data.model.User
 import com.ansssiaz.randuser.domain.UsersRepository
 import com.ansssiaz.randuser.util.Status
 import com.ansssiaz.randuser.util.USERS_COUNT
@@ -32,6 +33,7 @@ class UsersViewModel(
                 _state.update {
                     it.copy(
                         users = users,
+                        selectedUser = null,
                         status = Status.Idle
                     )
                 }
@@ -40,6 +42,22 @@ class UsersViewModel(
                     it.copy(status = Status.Error(e))
                 }
             }
+        }
+    }
+
+    fun setSelectedUser(user: User) {
+        _state.update {
+            it.copy(
+                selectedUser = user
+            )
+        }
+    }
+
+    fun resetSelectedUser() {
+        _state.update {
+            it.copy(
+                selectedUser = null
+            )
         }
     }
 }
