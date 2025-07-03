@@ -93,7 +93,7 @@ fun UserInformationScreen(
 
                     Row {
                         Text(text = "Email: ", fontWeight = FontWeight.Bold)
-                        Text(text = user.email)
+                        ClickableEmailText(user.email)
                     }
 
                     Row {
@@ -197,6 +197,24 @@ fun ClickableCoordinatesText(
             val uri = "geo:0,0?q=$query"
             val intent = Intent(Intent.ACTION_VIEW, uri.toUri())
             context.startActivity(intent)
+        }
+    )
+}
+
+@Composable
+fun ClickableEmailText(email: String) {
+    val context = LocalContext.current
+    Text(
+        text = email,
+        color = MaterialTheme.colorScheme.primary,
+        textDecoration = TextDecoration.Underline,
+        modifier = Modifier.clickable {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = "mailto:$email".toUri()
+            }
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+            }
         }
     )
 }
