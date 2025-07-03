@@ -7,4 +7,5 @@
     <string name="user_image_description">User image</string>
     <string name="phone_icon_description">Phone icon</string>
     <string name="address_icon_description">Address icon</string>
+    <string name="user_is_not_selected">User is not selected</string>
 </resources>

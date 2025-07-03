@@ -50,20 +50,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.ansssiaz.randuser.data.model.User
+import com.ansssiaz.randuser.domain.model.User
 import com.ansssiaz.randuser.presentation.viewmodel.UsersViewModel
 import com.ansssiaz.randuser.util.USERS_COUNT
 import com.ansssiaz.randuser.util.getErrorText
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListOfUsersScreen(
     onUserClick: (User) -> Unit,
-    viewModel: UsersViewModel = koinViewModel()
+    usersViewModel: UsersViewModel,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by usersViewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val pullToRefreshState = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
@@ -91,7 +90,7 @@ fun ListOfUsersScreen(
                         duration = SnackbarDuration.Indefinite
                     )
                     if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.getUsers(USERS_COUNT)
+                        usersViewModel.getUsers(USERS_COUNT)
                     }
                 }
             }
@@ -112,7 +111,7 @@ fun ListOfUsersScreen(
             else -> {
                 PullToRefreshBox(
                     isRefreshing = state.isRefreshing,
-                    onRefresh = { viewModel.getUsers(USERS_COUNT, isRefresh = true) },
+                    onRefresh = { usersViewModel.getUsers(USERS_COUNT, isRefresh = true) },
                     modifier = Modifier.padding(paddingValues),
                     state = pullToRefreshState,
                     indicator = {
@@ -140,7 +139,7 @@ fun ListOfUsersScreen(
 fun UserList(
     users: List<User>?,
     modifier: Modifier = Modifier,
-    onUserClick: (User) -> Unit = {},
+    onUserClick: (User) -> Unit = {}
 ) {
     LazyColumn(
         modifier = modifier
@@ -172,7 +171,7 @@ fun UserItem(
             verticalAlignment = Alignment.Top
         ) {
             AsyncImage(
-                model = user.picture.large,
+                model = user.picture,
                 contentDescription = stringResource(R.string.user_image_description),
                 placeholder = ColorPainter(MaterialTheme.colorScheme.background),
                 modifier = Modifier
@@ -184,7 +183,7 @@ fun UserItem(
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = "${user.name.first} ${user.name.last}",
+                    text = "${user.name} ${user.lastname}",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
@@ -216,7 +215,7 @@ fun UserItem(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "${user.location.country}, ${user.location.state},\n${user.location.city}, ${user.location.street.name} ${user.location.street.number}",
+                        text = "${user.country}, ${user.state},\n${user.city}, ${user.street} ${user.houseNumber}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

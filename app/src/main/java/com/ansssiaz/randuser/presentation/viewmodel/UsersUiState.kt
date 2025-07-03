@@ -1,10 +1,11 @@
 package com.ansssiaz.randuser.presentation.viewmodel
 
-import com.ansssiaz.randuser.data.model.User
+import com.ansssiaz.randuser.domain.model.User
 import com.ansssiaz.randuser.util.Status
 
 data class UsersUiState(
     val users: List<User>? = null,
+    val selectedUser: User? = null,
     val status: Status = Status.Idle
 ) {
     val isEmptyLoading: Boolean = status == Status.Loading && users.isNullOrEmpty()
