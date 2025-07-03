@@ -1,5 +1,7 @@
 package com.ansssiaz.randuser.presentation.screens
 
+import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,10 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,6 +41,7 @@ import coil.compose.AsyncImage
 import com.ansssiaz.randuser.R
 import com.ansssiaz.randuser.presentation.viewmodel.UsersViewModel
 import com.ansssiaz.randuser.util.formatDate
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,7 +100,7 @@ fun UserInformationScreen(
 
                     Row {
                         Text(text = "Phone: ", fontWeight = FontWeight.Bold)
-                        Text(text = user.phone)
+                        ClickablePhoneText(phone = user.phone)
                     }
 
                     Row {
@@ -128,6 +133,20 @@ fun UserInformationScreen(
                     Text(text = stringResource(R.string.user_is_not_selected))
                 }
             }
+        }
+    )
+}
+
+@Composable
+fun ClickablePhoneText(phone: String) {
+    val context = LocalContext.current
+    Text(
+        text = phone,
+        color = MaterialTheme.colorScheme.primary,
+        textDecoration = TextDecoration.Underline,
+        modifier = Modifier.clickable {
+            val intent = Intent(Intent.ACTION_DIAL, "tel:$phone".toUri())
+            context.startActivity(intent)
         }
     )
 }
