@@ -1,6 +1,7 @@
 package com.ansssiaz.randuser.presentation.screens
 
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,11 +31,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -113,12 +111,20 @@ fun UserInformationScreen(
                         Text(text = "${formatDate(user.dateOfBirth)} (${user.age} years old)")
                     }
 
-                    Text(buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Address: ")
-                        }
-                        append("${user.country}, ${user.state}, ${user.city}, ${user.street} ${user.houseNumber}")
-                    })
+                    Column {
+                        Text(
+                            text = "Address: ",
+                            fontWeight = FontWeight.Bold
+                        )
+                        ClickableAddressText(
+                            user.country,
+                            user.state,
+                            user.city,
+                            user.street,
+                            user.houseNumber
+                        )
+                    }
+
 
                     Row {
                         Text(text = "Coordinates: ", fontWeight = FontWeight.Bold)
@@ -146,6 +152,28 @@ fun ClickablePhoneText(phone: String) {
         textDecoration = TextDecoration.Underline,
         modifier = Modifier.clickable {
             val intent = Intent(Intent.ACTION_DIAL, "tel:$phone".toUri())
+            context.startActivity(intent)
+        }
+    )
+}
+
+@Composable
+fun ClickableAddressText(
+    country: String,
+    state: String,
+    city: String,
+    street: String,
+    houseNumber: Int
+) {
+    val context = LocalContext.current
+    val address = "$country, $state, $city, $street $houseNumber"
+    Text(
+        text = address,
+        color = MaterialTheme.colorScheme.primary,
+        textDecoration = TextDecoration.Underline,
+        modifier = Modifier.clickable {
+            val uri = Uri.encode(address)
+            val intent = Intent(Intent.ACTION_VIEW, "geo:0,0?q=$uri".toUri())
             context.startActivity(intent)
         }
     )
