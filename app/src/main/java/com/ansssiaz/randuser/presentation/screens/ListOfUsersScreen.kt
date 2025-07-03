@@ -50,7 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.ansssiaz.randuser.data.model.User
+import com.ansssiaz.randuser.domain.model.User
 import com.ansssiaz.randuser.presentation.viewmodel.UsersViewModel
 import com.ansssiaz.randuser.util.USERS_COUNT
 import com.ansssiaz.randuser.util.getErrorText
@@ -171,7 +171,7 @@ fun UserItem(
             verticalAlignment = Alignment.Top
         ) {
             AsyncImage(
-                model = user.picture.large,
+                model = user.picture,
                 contentDescription = stringResource(R.string.user_image_description),
                 placeholder = ColorPainter(MaterialTheme.colorScheme.background),
                 modifier = Modifier
@@ -183,7 +183,7 @@ fun UserItem(
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = "${user.name.first} ${user.name.last}",
+                    text = "${user.name} ${user.lastname}",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
@@ -215,7 +215,7 @@ fun UserItem(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "${user.location.country}, ${user.location.state},\n${user.location.city}, ${user.location.street.name} ${user.location.street.number}",
+                        text = "${user.country}, ${user.state},\n${user.city}, ${user.street} ${user.houseNumber}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

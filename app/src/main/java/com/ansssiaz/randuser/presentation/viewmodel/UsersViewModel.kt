@@ -2,8 +2,8 @@ package com.ansssiaz.randuser.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ansssiaz.randuser.data.model.User
-import com.ansssiaz.randuser.domain.UsersRepository
+import com.ansssiaz.randuser.domain.model.User
+import com.ansssiaz.randuser.domain.repository.UsersRepository
 import com.ansssiaz.randuser.util.Status
 import com.ansssiaz.randuser.util.USERS_COUNT
 import kotlinx.coroutines.flow.MutableStateFlow

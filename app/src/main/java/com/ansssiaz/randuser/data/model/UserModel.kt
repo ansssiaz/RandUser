@@ -1,15 +1,17 @@
 package com.ansssiaz.randuser.data.model
 
+import com.ansssiaz.randuser.domain.model.User
 import com.ansssiaz.randuser.util.PostcodeSerializer
 import kotlinx.serialization.Serializable
+import kotlin.String
 
 @Serializable
 data class UsersResponse(
-    val results: List<User>
+    val results: List<UserModel>
 )
 
 @Serializable
-data class User(
+data class UserModel(
     val gender: String,
     val name: Name,
     val location: Location,
@@ -95,4 +97,22 @@ data class Picture(
     val large: String,
     val medium: String,
     val thumbnail: String
+)
+
+fun UserModel.toUser() = User(
+    lastname = name.last,
+    name = name.first,
+    gender = gender,
+    dateOfBirth = dob.date,
+    age = dob.age,
+    email = email,
+    country = location.country,
+    street = location.street.name,
+    houseNumber = location.street.number,
+    city = location.city,
+    state = location.state,
+    coordinates = location.coordinates,
+    dateOfRegistration = registered.date,
+    phone = phone,
+    picture = picture.large
 )

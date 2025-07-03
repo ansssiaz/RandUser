@@ -28,7 +28,7 @@ fun UserInformationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${state.selectedUser?.name?.first} ${state.selectedUser?.name?.last}") },
+                title = { Text("${state.selectedUser?.name} ${state.selectedUser?.lastname}") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -43,7 +43,7 @@ fun UserInformationScreen(
                     .fillMaxSize()
             ) {
                 state.selectedUser?.let { user ->
-                    Text("${user.name.first} ${user.name.last}")
+                    Text("${user.name} ${user.lastname}")
                     Text(user.email)
                 }
             }

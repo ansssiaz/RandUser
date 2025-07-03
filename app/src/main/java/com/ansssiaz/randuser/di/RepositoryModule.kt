@@ -1,7 +1,7 @@
 package com.ansssiaz.randuser.di
 
 import com.ansssiaz.randuser.data.repository.UsersRepositoryImpl
-import com.ansssiaz.randuser.domain.UsersRepository
+import com.ansssiaz.randuser.domain.repository.UsersRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
